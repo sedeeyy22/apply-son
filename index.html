@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة تقديمات سون ستي</title>
+    <style>
+        :root {
+            --primary-bg: #0f0c29;
+            --accent: #e94560;
+            --disabled-color: #444; /* لون للأزرار المقفلة */
+            --text: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--text);
+            margin: 0; padding: 0; text-align: center;
+        }
+
+        header { padding: 40px; background: rgba(0,0,0,0.3); border-bottom: 2px solid var(--accent); }
+        h1 { color: var(--accent); font-size: 2.2rem; margin-bottom: 5px; }
+        
+        .rights {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            color: #bbb;
+        }
+        .rights span { color: var(--accent); font-weight: bold; }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px; padding: 40px; max-width: 1200px; margin: auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px; border-radius: 15px; transition: 0.3s;
+        }
+
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3); }
+
+        .btn {
+            background: var(--accent); color: white; padding: 12px;
+            border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
+            margin-top: 15px; width: 100%; font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        /* تنسيق الزر المقفل */
+        .btn:disabled {
+            background: var(--disabled-color);
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 1000;
+        }
+
+        .modal-content {
+            background: #1a1a2e; padding: 25px; border-radius: 15px;
+            width: 90%; max-width: 550px; border: 2px solid var(--accent); text-align: right;
+            max-height: 85vh; overflow-y: auto;
+        }
+
+        label { display: block; margin-top: 15px; font-weight: bold; color: var(--accent); font-size: 0.9rem; }
+
+        input, textarea {
+            width: 100%; padding: 10px; margin-top: 5px;
+            background: #24243e; border: 1px solid #444; color: white; border-radius: 5px;
+            box-sizing: border-box; font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🌐 نظام تقديمات سون ستي</h1>
+        <div class="rights">برمجة وتطوير: <span>خالد</span> | يوزر: <span>szaqe</span></div>
+        <p>اختر القسم المناسب وعبئ بياناتك بدقة</p>
+    </header>
+
+    <div class="container">
+        <div class="card"><h2>👑 مجلس الوزراء</h2><button class="btn" disabled>التقديم مقفل</button></div>
+        <div class="card"><h2>💼 الإدارة</h2><button class="btn" disabled>التقديم مقفل</button></div>
+        <div class="card"><h2>⚖️ العدل</h2><button class="btn" onclick="openModal('العدل')">تقديم الآن</button></div>
+        <div class="card"><h2>🚑 الصحة</h2><button class="btn" onclick="openModal('الصحة')">تقديم الآن</button></div>
+        <div class="card"><h2>📍 الرقابة</h2><button class="btn" disabled>التقديم مقفل</button></div>
+        <div class="card"><h2>🕶️ الاستخبارات</h2><button class="btn" onclick="openModal('الاستخبارات')">تقديم الآن</button></div>
+        <div class="card"><h2>🧨 الإجرام</h2><button class="btn" onclick="openModal('الإجرام')">تقديم الآن</button></div>
+        <div class="card"><h2>🚓 الشرطة</h2><button class="btn" onclick="openModal('الشرطة')">تقديم الآن</button></div>
+        <div class="card"><h2>🛡️ الجيش</h2><button class="btn" disabled>التقديم مقفل</button></div>
+    </div>
+
+    <div id="applyModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">تقديم طلب</h2>
+            <form id="applyForm">
+                <input type="hidden" id="deptName">
+                <div id="dynamicFields"></div>
+                <button type="submit" class="btn" id="submitBtn">إرسال الطلب</button>
+                <button type="button" class="btn" style="background:#555" onclick="closeModal()">إلغاء</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const webhookURL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
+
+        function openModal(dept) {
+            const modal = document.getElementById('applyModal');
+            const fields = document.getElementById('dynamicFields');
+            document.getElementById('deptName').value = dept;
+            document.getElementById('modalTitle').innerText = 'التقديم على قسم: ' + dept;
+            
+            let htmlFields = '';
+
+            if (dept === 'الاستخبارات') {
+                htmlFields = `
+                    <label>اسمك رول:</label><input type="text" id="roleName" required>
+                    <label>عمرك رول:</label><input type="number" id="roleAge" required>
+                    <label>خبراتك:</label><textarea id="exp" required></textarea>
+                    <label>وش بتسوي لو انخطفت؟:</label><textarea id="ifKidnapped" required></textarea>
+                    <label>هل اذا هددوك بتعترف؟:</label><input type="text" id="confess" required>
+                `;
+            } else if (dept === 'العدل' || dept === 'الصحة') {
+                htmlFields = `
+                    <label>اسمك رول:</label><input type="text" id="roleName" required>
+                    <label>عمرك رول:</label><input type="number" id="roleAge" required>
+                    <label>الايدي (ID):</label><input type="text" id="pID" required>
+                    <label>خبراتك السابقة في هذا المجال:</label><textarea id="exp" required></textarea>
+                    <label>ليش اخترت قسم ${dept}؟:</label><textarea id="whyJoin" required></textarea>
+                `;
+            } else {
+                htmlFields = `
+                    <label>اسمك رول:</label><input type="text" id="roleName" required>
+                    <label>عمرك رول:</label><input type="number" id="roleAge" required>
+                    <label>خبراتك:</label><textarea id="exp" required></textarea>
+                    <label>لماذا تريد الانضمام؟:</label><textarea id="whyOther" required></textarea>
+                `;
+            }
+
+            fields.innerHTML = htmlFields;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('applyModal').style.display = 'none'; }
+
+        document.getElementById('applyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const dept = document.getElementById('deptName').value;
+            btn.innerText = "جاري الإرسال...";
+            btn.disabled = true;
+
+            const inputs = document.querySelectorAll('#dynamicFields input, #dynamicFields textarea');
+            const fieldsData = [];
+            inputs.forEach(input => {
+                const label = input.previousElementSibling.innerText;
+                fieldsData.push({ name: label, value: input.value, inline: false });
+            });
+
+            const embedData = {
+                embeds: [{
+                    title: `📬 طلب تقديم جديد: ${dept}`,
+                    description: "صنع سعود",
+                    color: 15305824,
+                    fields: fieldsData,
+                    footer: { text: "بوابة تقديم سون ستي" },
+                    timestamp: new Date()
+                }]
+            };
+
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(embedData)
+            }).then(() => {
+                alert('تم إرسال تقديمك بنجاح!');
+                closeModal();
+                btn.disabled = false;
+                btn.innerText = "إرسال الطلب";
+            }).catch(() => {
+                alert('خطأ في رابط الويب هوك');
+                btn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>
