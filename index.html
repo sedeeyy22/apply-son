@@ -65,11 +65,13 @@
 
         label { display: block; margin-top: 15px; font-weight: bold; color: var(--accent); font-size: 0.9rem; }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%; padding: 10px; margin-top: 5px;
             background: #24243e; border: 1px solid #444; color: white; border-radius: 5px;
             box-sizing: border-box; font-family: inherit;
         }
+
+        select option { background: #1a1a2e; }
     </style>
 </head>
 <body>
@@ -81,7 +83,6 @@
     </header>
 
     <div class="container">
-        <!-- تم فتح جميع التقديمات هنا -->
         <div class="card"><h2>👑 مجلس الوزراء</h2><button class="btn" onclick="openModal('مجلس الوزراء')">تقديم الآن</button></div>
         <div class="card"><h2>💼 الإدارة</h2><button class="btn" onclick="openModal('الإدارة')">تقديم الآن</button></div>
         <div class="card"><h2>⚖️ العدل</h2><button class="btn" onclick="openModal('العدل')">تقديم الآن</button></div>
@@ -106,7 +107,7 @@
     </div>
 
     <script>
-        const webhookURL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
+        const webhookURL = "https://discord.com";
 
         function openModal(dept) {
             const modal = document.getElementById('applyModal');
@@ -114,11 +115,30 @@
             document.getElementById('deptName').value = dept;
             document.getElementById('modalTitle').innerText = 'التقديم على قسم: ' + dept;
             
-            // سؤال يوزرك ديسكورد مضاف بشكل ثابت لكل الأقسام
             let commonFields = `<label>يوزرك ديسكورد:</label><input type="text" id="discordUser" placeholder="e.g. user_123" required>`;
             let htmlFields = '';
 
-            if (dept === 'الاستخبارات') {
+            if (dept === 'الإجرام') {
+                htmlFields = `
+                    <label>اسمك رول:</label><input type="text" id="roleName" required>
+                    <label>عمرك رول:</label><input type="number" id="roleAge" required>
+                    <label>اختر العصابة/الحزب:</label>
+                    <select id="gangSelect" required>
+                        <option value="" disabled selected>اختر من القائمة...</option>
+                        <option value="المافيا الروسية">المافيا الروسية</option>
+                        <option value="السكراب">السكراب</option>
+                        <option value="الغرب">الغرب</option>
+                        <option value="التركسر">التركسر</option>
+                        <option value="النمس">النمس</option>
+                        <option value="حزب الدعثة">حزب الدعثة</option>
+                        <option value="حزب الجبل">حزب الجبل</option>
+                        <option value="حزب الموت">حزب الموت</option>
+                        <option value="حزب الملك">حزب الملك</option>
+                        <option value="حزب الزعيم">حزب الزعيم</option>
+                    </select>
+                    <label>سبب طلب تصريح:</label><textarea id="reason" required></textarea>
+                `;
+            } else if (dept === 'الاستخبارات') {
                 htmlFields = `
                     <label>اسمك رول:</label><input type="text" id="roleName" required>
                     <label>عمرك رول:</label><input type="number" id="roleAge" required>
@@ -156,10 +176,11 @@
             btn.innerText = "جاري الإرسال...";
             btn.disabled = true;
 
-            const inputs = document.querySelectorAll('#dynamicFields input, #dynamicFields textarea');
+            // تحديث لاختيار جميع أنواع الحقول بما فيها القائمة المنسدلة
+            const inputs = document.querySelectorAll('#dynamicFields input, #dynamicFields textarea, #dynamicFields select');
             const fieldsData = [];
             inputs.forEach(input => {
-                const label = input.previousElementSibling.innerText;
+                const label = input.previousElementSibling ? input.previousElementSibling.innerText : "حقل";
                 fieldsData.push({ name: label, value: input.value, inline: false });
             });
 
@@ -180,14 +201,14 @@
             }).then(() => {
                 alert('تم إرسال طلبك بنجاح!');
                 closeModal();
+            }).catch(err => {
+                alert('حدث خطأ أثناء الإرسال');
+                console.error(err);
+            }).finally(() => {
                 btn.innerText = "إرسال الطلب";
-                btn.disabled = false;
-            }).catch(() => {
-                alert('حدث خطأ أثناء الإرسال.');
                 btn.disabled = false;
             });
         });
     </script>
-
 </body>
 </html>
