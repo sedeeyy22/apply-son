@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة التقديم المتطورة</title>
+    <title>بوابة التقديم الذكية</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
@@ -15,7 +15,7 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background: var(--bg);
-            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.2), transparent), 
+            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent), 
                               radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.1), transparent);
             color: white;
             min-height: 100vh;
@@ -26,78 +26,82 @@
             padding: 40px 20px;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(99, 102, 241, 0.5); }
-        p.subtitle { color: #94a3b8; margin-bottom: 40px; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; text-align: center; }
+        p.subtitle { color: #94a3b8; margin-bottom: 40px; text-align: center; }
 
         /* شبكة المربعات */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
             width: 100%;
-            max-width: 900px;
-            transition: 0.5s ease;
+            max-width: 1000px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 20px;
-            border-radius: 20px;
+            padding: 35px 20px;
+            border-radius: 24px;
             text-align: center;
             cursor: pointer;
-            transition: 0.3s;
-            backdrop-filter: blur(10px);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(12px);
         }
 
         .card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-10px);
+            background: rgba(99, 102, 241, 0.1);
+            transform: scale(1.05);
             border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(34, 211, 238, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .card i { font-size: 40px; display: block; margin-bottom: 15px; }
+        .card h3 { margin: 15px 0 0 0; font-size: 20px; }
 
-        /* النموذج (مخفي في البداية) */
+        /* قسم النموذج */
         #formSection {
             display: none;
             width: 100%;
-            max-width: 500px;
-            background: rgba(255, 255, 255, 0.07);
+            max-width: 550px;
+            background: rgba(30, 41, 59, 0.7);
             padding: 40px;
-            border-radius: 30px;
-            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: slideUp 0.5s ease;
+            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
         .back-btn {
-            background: none; border: 1px solid #475569; color: #94a3b8;
-            padding: 8px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid #475569; color: #fff;
+            padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 25px; transition: 0.3s;
         }
+        .back-btn:hover { background: #475569; }
 
-        .input-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 14px; }
+        .input-group { margin-bottom: 22px; }
+        label { display: block; margin-bottom: 10px; color: #e2e8f0; font-weight: bold; }
         input, textarea {
-            width: 100%; padding: 12px; background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; box-sizing: border-box;
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; box-sizing: border-box;
+            font-family: 'Tajawal';
         }
+        input:focus, textarea:focus { border-color: var(--accent); outline: none; }
 
         .submit-btn {
-            width: 100%; padding: 15px; background: linear-gradient(45deg, var(--primary), var(--accent));
-            border: none; border-radius: 12px; color: white; font-weight: bold; cursor: pointer;
+            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--accent));
+            border: none; border-radius: 14px; color: white; font-size: 18px; font-weight: bold; cursor: pointer;
+            transition: 0.3s;
         }
+        .submit-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <h1>بوابة التقديم</h1>
-    <p class="subtitle">اختر القسم الذي تود الانضمام إليه</p>
+    <h1>بوابة التقديم الإلكترونية</h1>
+    <p class="subtitle">اختر القطاع المناسب لبدء إجراءات الانضمام</p>
 
     <!-- قائمة المربعات -->
     <div class="grid-container" id="mainGrid">
@@ -106,55 +110,61 @@
         <div class="card" onclick="openForm('الصحة')">🚑 <h3>الصحة</h3></div>
         <div class="card" onclick="openForm('العدل')">⚖️ <h3>العدل</h3></div>
         <div class="card" onclick="openForm('الأستخبارات')">🕵️ <h3>الأستخبارات</h3></div>
-        <div class="card" onclick="openForm('المافيا الروسية')">🐻 <h3>المافيا</h3></div>
+        <div class="card" onclick="openForm('المافيا الروسية')">🐻 <h3>المافيا الروسية</h3></div>
         <div class="card" onclick="openForm('الأجرام')">🔪 <h3>الأجرام</h3></div>
-        <div class="card" onclick="openForm('إدارة')">🛠️ <h3>إدارة</h3></div>
-        <div class="card" onclick="openForm('رقابة')">👁️ <h3>رقابة</h3></div>
+        <div class="card" onclick="openForm('إدارة')">🛠️ <h3>الإدارة</h3></div>
+        <div class="card" onclick="openForm('رقابة')">👁️ <h3>الرقابة</h3></div>
     </div>
 
     <!-- قسم التقديم -->
     <div id="formSection">
-        <button class="back-btn" onclick="closeForm()">← العودة للقائمة</button>
-        <h2 id="deptTitle">التقديم على القسم</h2>
+        <button class="back-btn" onclick="closeForm()">← العودة للقطاعات</button>
+        <h2 id="deptTitle" style="color: var(--accent); margin-top: 0;">التقديم على القسم</h2>
         
         <form id="applyForm">
             <input type="hidden" id="selectedDept">
             
             <div class="input-group">
                 <label>يوزرك في الديسكورد</label>
-                <input type="text" id="discord_user" placeholder="Discord User" required>
+                <input type="text" id="discord_user" placeholder="مثال: user_name" required>
             </div>
 
             <div class="input-group">
-                <label id="nameLabel">اسمك رول</label>
-                <input type="text" id="fullName" required>
+                <label id="nameLabel">الاسم</label>
+                <input type="text" id="fullName" placeholder="اكتب اسمك هنا" required>
             </div>
 
+            <!-- السؤال المتغير عن الخبرات -->
             <div class="input-group">
-                <label>لماذا تريد التقديم؟</label>
-                <textarea id="reason" rows="4" required></textarea>
+                <label id="experienceLabel">خبراتك في هذا القطاع</label>
+                <textarea id="experience" rows="4" placeholder="اذكر خبراتك السابقة بالتفصيل..." required></textarea>
             </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب</button>
+            <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب الآن</button>
         </form>
     </div>
 
     <script>
+        // اضع رابط الويب هوك الخاص بك هنا
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
 
         function openForm(dept) {
             document.getElementById('mainGrid').classList.add('hidden');
             document.getElementById('formSection').style.display = 'block';
-            document.getElementById('deptTitle').innerText = "التقديم على: " + dept;
+            document.getElementById('deptTitle').innerText = "التقديم على قطاع: " + dept;
             document.getElementById('selectedDept').value = dept;
 
-            // تغيير المسمى بناءً على القسم
+            // تحديث سؤال الخبرات بناءً على القسم
+            document.getElementById('experienceLabel').innerText = `ما هي خبراتك في (${dept})؟`;
+
+            // تحديث مسمى الاسم بناءً على طلبك
             const nameLabel = document.getElementById('nameLabel');
             if (dept === 'إدارة' || dept === 'رقابة') {
                 nameLabel.innerText = "الاسم الثلاثي";
             } else {
-                nameLabel.innerText = "اسمك رول (Roleplay)";
+                nameLabel.innerText = "اسمك رول (داخل اللعبة)";
             }
+            window.scrollTo(0, 0);
         }
 
         function closeForm() {
@@ -165,35 +175,42 @@
         document.getElementById('applyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = "جاري الإرسال...";
+            btn.innerText = "جاري الإرسال الرقمي...";
             btn.disabled = true;
 
             const payload = {
+                username: "بوت التقديم",
                 embeds: [{
-                    title: "📬 طلب انضمام جديد",
-                    color: 3447003,
+                    title: "📨 طلب انضمام جديد",
+                    color: 5814783,
                     fields: [
-                        { name: "🏢 القسم:", value: document.getElementById('selectedDept').value, inline: true },
+                        { name: "🚩 القطاع المطلوب:", value: `**${document.getElementById('selectedDept').value}**`, inline: false },
                         { name: "🆔 ديسكورد:", value: document.getElementById('discord_user').value, inline: true },
-                        { name: "👤 الاسم:", value: document.getElementById('fullName').value },
-                        { name: "💬 السبب:", value: document.getElementById('reason').value }
+                        { name: "👤 الاسم المرفق:", value: document.getElementById('fullName').value, inline: true },
+                        { name: `📑 الخبرات في ${document.getElementById('selectedDept').value}:`, value: document.getElementById('experience').value }
                     ],
-                    footer: { text: "تاريخ الطلب: " + new Date().toLocaleString() }
+                    footer: { text: "ساعة التقديم: " + new Date().toLocaleString('ar-EG') }
                 }]
             };
 
             try {
-                await fetch(WEBHOOK_URL, {
+                const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                alert("✅ تم إرسال طلبك بنجاح!");
-                closeForm();
+                
+                if(response.ok) {
+                    alert("✅ تم استلام طلبك بنجاح، سيتم الرد عليك قريباً.");
+                    document.getElementById('applyForm').reset();
+                    closeForm();
+                } else {
+                    throw new Error();
+                }
             } catch (error) {
-                alert("❌ فشل الإرسال، تحقق من الويب هوك.");
+                alert("❌ فشل الإرسال! تأكد من إعدادات الويب هوك.");
             } finally {
-                btn.innerText = "إرسال الطلب";
+                btn.innerText = "إرسال الطلب الآن";
                 btn.disabled = false;
             }
         });
