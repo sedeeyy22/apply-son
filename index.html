@@ -10,6 +10,7 @@
             --primary: #6366f1;
             --accent: #22d3ee;
             --bg: #0f172a;
+            --danger: #ef4444;
         }
 
         body {
@@ -29,7 +30,6 @@
         h1 { font-size: 2.5rem; margin-bottom: 10px; text-align: center; }
         p.subtitle { color: #94a3b8; margin-bottom: 40px; text-align: center; }
 
-        /* شبكة المربعات */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -47,18 +47,30 @@
             cursor: pointer;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(12px);
+            position: relative;
         }
 
-        .card:hover {
+        .card:hover:not(.locked) {
             background: rgba(99, 102, 241, 0.1);
             transform: scale(1.05);
             border-color: var(--accent);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
+        /* تنسيق البطاقات المقفلة */
+        .card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+            border-style: dashed;
+        }
+        
+        .card.locked:hover {
+            border-color: var(--danger);
+        }
+
         .card h3 { margin: 15px 0 0 0; font-size: 20px; }
 
-        /* قسم النموذج */
         #formSection {
             display: none;
             width: 100%;
@@ -103,7 +115,6 @@
     <h1>بوابة التقديم الإلكترونية</h1>
     <p class="subtitle">اختر القطاع المناسب لبدء إجراءات الانضمام</p>
 
-    <!-- قائمة المربعات -->
     <div class="grid-container" id="mainGrid">
         <div class="card" onclick="openForm('الجيش')">🎖️ <h3>الجيش</h3></div>
         <div class="card" onclick="openForm('الشرطة')">👮 <h3>الشرطة</h3></div>
@@ -112,54 +123,66 @@
         <div class="card" onclick="openForm('مقفل التقديم')">🕵️ <h3>مقفل التقديم</h3></div>
         <div class="card" onclick="openForm('فتح عصابة')">🥷🏻 <h3>فتح عصابة</h3></div>
         <div class="card" onclick="openForm('الأجرام')">🔪 <h3>الأجرام</h3></div>
-        <div class="card" onclick="openForm('مقفل التقديم')">🛠️ <h3>الإدارة</h3></div>
+        <div class="card" onclick="openForm('الإدارة')">🛠️ <h3>الإدارة</h3></div>
         <div class="card" onclick="openForm('مقفل التقديم')">👁️ <h3>مقفل التقديم</h3></div>
     </div>
 
-    <!-- قسم التقديم -->
     <div id="formSection">
         <button class="back-btn" onclick="closeForm()">← العودة للقطاعات</button>
         <h2 id="deptTitle" style="color: var(--accent); margin-top: 0;">التقديم على القسم</h2>
         
         <form id="applyForm">
             <input type="hidden" id="selectedDept">
-            
             <div class="input-group">
                 <label>يوزرك في الديسكورد</label>
                 <input type="text" id="discord_user" placeholder="مثال: user_name" required>
             </div>
-
             <div class="input-group">
                 <label id="nameLabel">الاسم</label>
                 <input type="text" id="fullName" placeholder="اكتب اسمك هنا" required>
             </div>
-
-            <!-- السؤال المتغير عن الخبرات -->
             <div class="input-group">
                 <label id="experienceLabel">خبراتك في هذا القطاع</label>
                 <textarea id="experience" rows="4" placeholder="اذكر خبراتك السابقة بالتفصيل..." required></textarea>
             </div>
-
             <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب الآن</button>
         </form>
     </div>
 
     <script>
-        // اضع رابط الويب هوك الخاص بك هنا
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
 
+        // وظيفة لإغلاق التقديمات التي تحتوي على كلمة "مقفل"
+        function checkLockedSectors() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText;
+                if (title.includes("مقفل")) {
+                    card.classList.add('locked');
+                    card.onclick = function() {
+                        alert("عذراً، التقديم على هذا القطاع مغلق حالياً.");
+                        return false;
+                    };
+                }
+            });
+        }
+
+        // تشغيل الفحص عند تحميل الصفحة
+        window.onload = checkLockedSectors;
+
         function openForm(dept) {
+            // منع الفتح إذا كان القسم يحتوي كلمة مقفل (كحماية إضافية)
+            if (dept.includes("مقفل")) return;
+
             document.getElementById('mainGrid').classList.add('hidden');
             document.getElementById('formSection').style.display = 'block';
             document.getElementById('deptTitle').innerText = "التقديم على قطاع: " + dept;
             document.getElementById('selectedDept').value = dept;
 
-            // تحديث سؤال الخبرات بناءً على القسم
             document.getElementById('experienceLabel').innerText = `ما هي خبراتك في (${dept})؟`;
 
-            // تحديث مسمى الاسم بناءً على طلبك
             const nameLabel = document.getElementById('nameLabel');
-            if (dept === 'إدارة' || dept === 'رقابة') {
+            if (dept === 'الإدارة' || dept === 'الرقابة') {
                 nameLabel.innerText = "الاسم الثلاثي";
             } else {
                 nameLabel.innerText = "اسمك رول (داخل اللعبة)";
