@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقديم طلب انضمام</title>
+    <title>بوابة التقديم الإلكترونية</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
             --secondary: #a855f7;
+            --accent: #22d3ee;
             --bg: #0f172a;
         }
 
         body {
             font-family: 'Tajawal', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
             color: white;
             display: flex;
             justify-content: center;
@@ -22,156 +26,236 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            overflow-x: hidden;
         }
 
-        .form-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
+        .container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 40px;
-            border-radius: 24px;
+            border-radius: 30px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
         }
 
-        h2 {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
             text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(to right, #818cf8, #c084fc);
+            margin-bottom: 10px;
+            font-size: 32px;
+            background: linear-gradient(to right, var(--accent), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 28px;
         }
 
-        .input-group {
+        p.subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .field-group {
             margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: #cbd5e1;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #e2e8f0;
+            font-size: 15px;
         }
 
-        input, textarea, select {
+        select, input, textarea {
             width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 14px;
+            background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border-radius: 15px;
             color: white;
-            outline: none;
-            transition: 0.3s;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
             box-sizing: border-box;
         }
 
-        input:focus, textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
+            background: rgba(15, 23, 42, 0.8);
         }
+
+        option { background: #1e293b; }
 
         button {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 16px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 12px;
+            border-radius: 15px;
             color: white;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
-            margin-top: 10px;
+            transition: 0.3s;
+            margin-top: 15px;
+            box-shadow: 0 10px 20px -5px rgba(168, 85, 247, 0.4);
         }
 
         button:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px -5px rgba(168, 85, 247, 0.6);
+            filter: brightness(1.1);
         }
 
-        #status {
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #statusMsg {
             text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
+            margin-top: 20px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <h2>تقديم طلب جديد</h2>
-    <form id="applyForm">
-        <div class="input-group">
-            <label>الاسم الكامل</label>
-            <input type="text" id="name" placeholder="ادخل اسمك الثلاثي" required>
+<div class="container">
+    <h1>تقديم طلب انضمام</h1>
+    <p class="subtitle">يرجى اختيار القسم وتعبئة البيانات بدقة</p>
+
+    <form id="webhookForm">
+        <!-- قسم الاختيار -->
+        <div class="field-group">
+            <label>اختر القسم المطلوب</label>
+            <select id="department" required onchange="updateFields()">
+                <option value="" disabled selected>-- اختر من القائمة --</option>
+                <option value="الجيش">الجيش</option>
+                <option value="الشرطة">الشرطة</option>
+                <option value="الصحة">الصحة</option>
+                <option value="العدل">العدل</option>
+                <option value="الأستخبارات">الأستخبارات</option>
+                <option value="المافيا الروسية">المافيا الروسية</option>
+                <option value="الأجرام">الأجرام</option>
+                <option value="إدارة">إدارة</option>
+                <option value="رقابة">رقابة</option>
+            </select>
         </div>
 
-        <div class="input-group">
-            <label>العمر</label>
-            <input type="number" id="age" placeholder="مثال: 20" required>
+        <!-- يوزر الديسكورد -->
+        <div class="field-group">
+            <label>يوزرك في الديسكورد</label>
+            <input type="text" id="discord_user" placeholder="example#0000" required>
         </div>
 
-        <div class="input-group">
-            <label>الايدي (ID)</label>
-            <input type="text" id="discord_id" placeholder="ID الخاص بك" required>
+        <!-- الحقل المتغير (الاسم) -->
+        <div class="field-group" id="nameContainer">
+            <label id="nameLabel">الاسم</label>
+            <input type="text" id="nameInput" placeholder="..." required>
         </div>
 
-        <div class="input-group">
-            <label>لماذا تريد الانضمام؟</label>
-            <textarea id="reason" rows="4" placeholder="اكتب سبب تقديمك هنا..." required></textarea>
+        <!-- سؤال إضافي (اختياري يمكنك تفعيله) -->
+        <div class="field-group">
+            <label>لماذا تريد هذا المنصب؟</label>
+            <textarea id="reason" rows="3" placeholder="تحدث عن خبراتك..." required></textarea>
         </div>
 
-        <button type="submit" id="submitBtn">إرسال الطلب</button>
-        <p id="status"></p>
+        <button type="submit" id="submitBtn">إرسال الطلب الآن</button>
+        <div id="statusMsg"></div>
     </form>
 </div>
 
 <script>
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
+    // ضع رابط الويب هوك الخاص بك هنا
+    const DISCORD_WEBHOOK = "ضع_رابط_الويب_هوك_هنا";
 
-    document.getElementById('applyForm').addEventListener('submit', async (e) => {
+    // تحديث المسميات بناءً على القسم
+    function updateFields() {
+        const dept = document.getElementById('department').value;
+        const nameLabel = document.getElementById('nameLabel');
+        const nameInput = document.getElementById('nameInput');
+
+        if (dept === "إدارة" || dept === "رقابة") {
+            nameLabel.innerText = "الاسم الثلاثي";
+            nameInput.placeholder = "اكتب اسمك الثلاثي الحقيقي";
+        } else {
+            nameLabel.innerText = "اسمك رول (Roleplay Name)";
+            nameInput.placeholder = "اكتب اسم الشخصية داخل اللعبة";
+        }
+    }
+
+    document.getElementById('webhookForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const status = document.getElementById('status');
         
-        btn.disabled = true;
-        btn.innerText = "جاري الإرسال...";
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMsg');
+        
+        const data = {
+            dept: document.getElementById('department').value,
+            user: document.getElementById('discord_user').value,
+            name: document.getElementById('nameInput').value,
+            reason: document.getElementById('reason').value
+        };
 
-        const payload = {
+        btn.disabled = true;
+        btn.innerText = "جاري الإرسال الرقمي...";
+
+        // تجهيز شكل الرسالة في ديسكورد
+        const embedPayload = {
+            username: "نظام التقديم الآلي",
             embeds: [{
-                title: "📌 طلب انضمام جديد",
-                color: 65280,
+                title: "📩 طلب تقديم جديد وصل!",
+                color: 10181046, // لون بنفسجي
                 fields: [
-                    { name: "👤 الاسم:", value: document.getElementById('name').value, inline: true },
-                    { name: "🎂 العمر:", value: document.getElementById('age').value, inline: true },
-                    { name: "🆔 الآيدي:", value: document.getElementById('discord_id').value },
-                    { name: "📝 السبب:", value: document.getElementById('reason').value }
+                    { name: "🏢 القسم:", value: `**${data.dept}**`, inline: true },
+                    { name: "👤 يوزر الديسكورد:", value: data.user, inline: true },
+                    { name: "📝 الاسم المقدم به:", value: data.name },
+                    { name: "💡 السبب/الخبرة:", value: data.reason }
                 ],
-                footer: { text: "تاريخ الطلب: " + new Date().toLocaleString('ar-EG') }
+                footer: { text: "تاريخ الإرسال: " + new Date().toLocaleString('ar-SA') },
+                thumbnail: { url: "https://i.imgur.com" } // أيقونة اختيارية
             }]
         };
 
         try {
-            const response = await fetch(WEBHOOK_URL, {
+            const response = await fetch(DISCORD_WEBHOOK, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(embedPayload)
             });
 
             if (response.ok) {
+                status.style.display = "block";
                 status.style.color = "#4ade80";
-                status.innerText = "✅ تم إرسال طلبك بنجاح!";
-                document.getElementById('applyForm').reset();
+                status.style.background = "rgba(74, 222, 128, 0.1)";
+                status.innerText = "✅ تم إرسال طلبك بنجاح إلى الإدارة!";
+                document.getElementById('webhookForm').reset();
+                updateFields(); // إعادة تصفير المسميات
             } else {
                 throw new Error();
             }
-        } catch (error) {
+        } catch (err) {
+            status.style.display = "block";
             status.style.color = "#f87171";
-            status.innerText = "❌ حدث خطأ، حاول مرة أخرى.";
+            status.style.background = "rgba(248, 113, 113, 0.1)";
+            status.innerText = "❌ حدث خطأ! تأكد من رابط الويب هوك.";
         } finally {
             btn.disabled = false;
-            btn.innerText = "إرسال الطلب";
+            btn.innerText = "إرسال الطلب الآن";
         }
     });
 </script>
