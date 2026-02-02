@@ -47,7 +47,6 @@
             cursor: pointer;
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(12px);
-            position: relative;
         }
 
         .card:hover:not(.locked) {
@@ -57,16 +56,10 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* تنسيق البطاقات المقفلة */
         .card.locked {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            filter: grayscale(0.8);
             border-style: dashed;
-        }
-        
-        .card.locked:hover {
-            border-color: var(--danger);
         }
 
         .card h3 { margin: 15px 0 0 0; font-size: 20px; }
@@ -89,16 +82,14 @@
             background: rgba(255,255,255,0.05); border: 1px solid #475569; color: #fff;
             padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 25px; transition: 0.3s;
         }
-        .back-btn:hover { background: #475569; }
 
         .input-group { margin-bottom: 22px; }
         label { display: block; margin-bottom: 10px; color: #e2e8f0; font-weight: bold; }
-        input, textarea {
+        input, textarea, select {
             width: 100%; padding: 14px; background: rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; box-sizing: border-box;
             font-family: 'Tajawal';
         }
-        input:focus, textarea:focus { border-color: var(--accent); outline: none; }
 
         .submit-btn {
             width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -123,28 +114,50 @@
         <div class="card" onclick="openForm('مقفل التقديم')">🕵️ <h3>مقفل التقديم</h3></div>
         <div class="card" onclick="openForm('فتح عصابة')">🥷🏻 <h3>فتح عصابة</h3></div>
         <div class="card" onclick="openForm('الأجرام')">🔪 <h3>الأجرام</h3></div>
-        <div class="card" onclick="openForm('الإدارة')">🛠️ <h3>الإدارة</h3></div>
+        <div class="card" onclick="openForm('مقفل التقديم')">🛠️ <h3>الإدارة</h3></div>
         <div class="card" onclick="openForm('مقفل التقديم')">👁️ <h3>مقفل التقديم</h3></div>
     </div>
 
     <div id="formSection">
         <button class="back-btn" onclick="closeForm()">← العودة للقطاعات</button>
-        <h2 id="deptTitle" style="color: var(--accent); margin-top: 0;">التقديم على القسم</h2>
+        <h2 id="deptTitle" style="color: var(--accent); margin-top: 0;"></h2>
         
         <form id="applyForm">
             <input type="hidden" id="selectedDept">
+            
             <div class="input-group">
                 <label>يوزرك في الديسكورد</label>
                 <input type="text" id="discord_user" placeholder="مثال: user_name" required>
             </div>
+
             <div class="input-group">
-                <label id="nameLabel">الاسم</label>
-                <input type="text" id="fullName" placeholder="اكتب اسمك هنا" required>
+                <label id="nameLabel">اسمك رول</label>
+                <input type="text" id="fullName" placeholder="" required>
             </div>
+
+            <div class="input-group" id="ageGroup">
+                <label>عمرك رول</label>
+                <input type="number" id="ageRole" placeholder="مثال: 25">
+            </div>
+
+            <div class="input-group hidden" id="membersCountGroup">
+                <label>كم عدد أعضاءك الذين معك؟</label>
+                <input type="number" id="membersCount" placeholder="مثال: 5">
+            </div>
+
             <div class="input-group">
-                <label id="experienceLabel">خبراتك في هذا القطاع</label>
-                <textarea id="experience" rows="4" placeholder="اذكر خبراتك السابقة بالتفصيل..." required></textarea>
+                <label id="experienceLabel">خبراتك</label>
+                <textarea id="experience" rows="4" required></textarea>
             </div>
+
+            <div class="input-group hidden" id="roomAddGroup">
+                <label>هل أنت حاب تضيف روم تقديم لعصابتك؟</label>
+                <select id="addRoom">
+                    <option value="نعم">نعم</option>
+                    <option value="لا">لا</option>
+                </select>
+            </div>
+
             <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب الآن</button>
         </form>
     </div>
@@ -152,67 +165,86 @@
     <script>
         const WEBHOOK_URL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
 
-        // وظيفة لإغلاق التقديمات التي تحتوي على كلمة "مقفل"
-        function checkLockedSectors() {
+        // وظيفة لإغلاق البطاقات التي تحتوي على كلمة "مقفل"
+        function lockStatus() {
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
-                const title = card.querySelector('h3').innerText;
-                if (title.includes("مقفل")) {
+                if (card.innerText.includes("مقفل")) {
                     card.classList.add('locked');
-                    card.onclick = function() {
-                        alert("عذراً، التقديم على هذا القطاع مغلق حالياً.");
-                        return false;
-                    };
                 }
             });
         }
-
-        // تشغيل الفحص عند تحميل الصفحة
-        window.onload = checkLockedSectors;
+        lockStatus();
 
         function openForm(dept) {
-            // منع الفتح إذا كان القسم يحتوي كلمة مقفل (كحماية إضافية)
-            if (dept.includes("مقفل")) return;
+            if (dept.includes("مقفل")) {
+                alert("نعتذر، التقديم على هذا القطاع مقفل حالياً.");
+                return;
+            }
 
             document.getElementById('mainGrid').classList.add('hidden');
             document.getElementById('formSection').style.display = 'block';
-            document.getElementById('deptTitle').innerText = "التقديم على قطاع: " + dept;
+            document.getElementById('deptTitle').innerText = "التقديم على: " + dept;
             document.getElementById('selectedDept').value = dept;
 
-            document.getElementById('experienceLabel').innerText = `ما هي خبراتك في (${dept})؟`;
-
-            const nameLabel = document.getElementById('nameLabel');
-            if (dept === 'الإدارة' || dept === 'الرقابة') {
-                nameLabel.innerText = "الاسم الثلاثي";
+            // إعادة ضبط الحقول الافتراضية
+            document.getElementById('membersCountGroup').classList.add('hidden');
+            document.getElementById('roomAddGroup').classList.add('hidden');
+            document.getElementById('ageGroup').classList.remove('hidden');
+            
+            // تخصيص الأسئلة بناءً على القسم
+            if (dept === 'فتح عصابة') {
+                document.getElementById('nameLabel').innerText = "اسمك رول:";
+                document.getElementById('experienceLabel').innerText = "خبراتك الإجرامية (اكثر من سطرين):";
+                document.getElementById('experience').placeholder = "اذكر تفاصيل خبراتك هنا...";
+                document.getElementById('membersCountGroup').classList.remove('hidden');
+                document.getElementById('roomAddGroup').classList.remove('hidden');
+            } else if (dept === 'الإدارة') {
+                document.getElementById('nameLabel').innerText = "الاسم الثلاثي:";
+                document.getElementById('experienceLabel').innerText = "لماذا تريد الانضمام للإدارة؟";
             } else {
-                nameLabel.innerText = "اسمك رول (داخل اللعبة)";
+                document.getElementById('nameLabel').innerText = "اسمك رول (داخل اللعبة):";
+                document.getElementById('experienceLabel').innerText = `خبراتك في قطاع ${dept}:`;
             }
+            
             window.scrollTo(0, 0);
         }
 
         function closeForm() {
             document.getElementById('mainGrid').classList.remove('hidden');
             document.getElementById('formSection').style.display = 'none';
+            document.getElementById('applyForm').reset();
         }
 
         document.getElementById('applyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
-            btn.innerText = "جاري الإرسال الرقمي...";
+            const dept = document.getElementById('selectedDept').value;
+            btn.innerText = "جاري الإرسال...";
             btn.disabled = true;
 
+            // تجهيز البيانات للديسكورد
+            let fields = [
+                { name: "🚩 القطاع:", value: `**${dept}**`, inline: false },
+                { name: "🆔 ديسكورد:", value: document.getElementById('discord_user').value, inline: true },
+                { name: "👤 اسم الرول:", value: document.getElementById('fullName').value, inline: true },
+                { name: "🎂 عمر الرول:", value: document.getElementById('ageRole').value || "غير محدد", inline: true }
+            ];
+
+            if (dept === 'فتح عصابة') {
+                fields.push({ name: "👥 عدد الأعضاء:", value: document.getElementById('membersCount').value, inline: true });
+                fields.push({ name: "🏠 إضافة روم تقديم؟:", value: document.getElementById('addRoom').value, inline: true });
+            }
+
+            fields.push({ name: "📑 تفاصيل الخبرة:", value: document.getElementById('experience').value });
+
             const payload = {
-                username: "بوت التقديم",
+                username: "بوابة التقديم",
                 embeds: [{
-                    title: "📨 طلب انضمام جديد",
-                    color: 5814783,
-                    fields: [
-                        { name: "🚩 القطاع المطلوب:", value: `**${document.getElementById('selectedDept').value}**`, inline: false },
-                        { name: "🆔 ديسكورد:", value: document.getElementById('discord_user').value, inline: true },
-                        { name: "👤 الاسم المرفق:", value: document.getElementById('fullName').value, inline: true },
-                        { name: `📑 الخبرات في ${document.getElementById('selectedDept').value}:`, value: document.getElementById('experience').value }
-                    ],
-                    footer: { text: "ساعة التقديم: " + new Date().toLocaleString('ar-EG') }
+                    title: "📨 طلب تقديم جديد",
+                    color: dept === 'فتح عصابة' ? 15158332 : 3447003,
+                    fields: fields,
+                    footer: { text: "توقيت الطلب: " + new Date().toLocaleString('ar-SA') }
                 }]
             };
 
@@ -222,16 +254,12 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
                 if(response.ok) {
-                    alert("✅ تم استلام طلبك بنجاح، سيتم الرد عليك قريباً.");
-                    document.getElementById('applyForm').reset();
+                    alert("✅ تم إرسال طلبك بنجاح!");
                     closeForm();
-                } else {
-                    throw new Error();
-                }
+                } else { throw new Error(); }
             } catch (error) {
-                alert("❌ فشل الإرسال! تأكد من إعدادات الويب هوك.");
+                alert("❌ حدث خطأ في الإرسال، تأكد من اتصالك.");
             } finally {
                 btn.innerText = "إرسال الطلب الآن";
                 btn.disabled = false;
