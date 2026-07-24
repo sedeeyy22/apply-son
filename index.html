@@ -3,268 +3,705 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة التقديم الذكية</title>
-    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <title>إيليت زون | Elite Zone RP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --accent: #22d3ee;
-            --bg: #0f172a;
-            --danger: #ef4444;
+            --bg-main: #0a0c10;
+            --card-bg: rgba(22, 27, 38, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-purple: #6366f1;
+            --primary-pink: #ec4899;
+            --glow-color: rgba(99, 102, 241, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
         }
 
         body {
-            font-family: 'Tajawal', sans-serif;
-            background: var(--bg);
-            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent), 
-                              radial-gradient(circle at bottom left, rgba(34, 211, 238, 0.1), transparent);
-            color: white;
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
+            color: #f1f5f9;
             min-height: 100vh;
-            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            justify-content: center;
+            padding: 20px 15px;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; text-align: center; }
-        p.subtitle { color: #94a3b8; margin-bottom: 40px; text-align: center; }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1000px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 35px 20px;
-            border-radius: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            backdrop-filter: blur(12px);
-        }
-
-        .card:hover:not(.locked) {
-            background: rgba(99, 102, 241, 0.1);
-            transform: scale(1.05);
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .card.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-            border-style: dashed;
-        }
-
-        .card h3 { margin: 15px 0 0 0; font-size: 20px; }
-
-        #formSection {
-            display: none;
+        /* ---------------------------------- */
+        /* 🚪 شاشات البوابة والتحقق (Gateway) */
+        /* ---------------------------------- */
+        .gateway-overlay {
             width: 100%;
             max-width: 550px;
-            background: rgba(30, 41, 59, 0.7);
-            padding: 40px;
-            border-radius: 32px;
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(99, 102, 241, 0.2);
+            padding: 40px 30px;
+            text-align: center;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gateway-title {
+            font-size: 32px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff 30%, var(--primary-purple), var(--primary-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .gateway-desc {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .gateway-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-gate {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-gate-discord {
+            background: linear-gradient(135deg, #5865f2, #404fed);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(88, 101, 242, 0.4);
+        }
+
+        .btn-gate-discord:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.6);
+        }
+
+        .btn-gate-social {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-gate-social:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            border-color: var(--primary-pink);
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 16px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 2px;
+            outline: none;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .code-input:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        .btn-back-gate {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .btn-back-gate:hover { color: #fff; }
+
+        .error-msg {
+            color: #f87171;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* ---------------------------------- */
+        /* 🏙️ كرت السيرفر الرئيسي */
+        /* ---------------------------------- */
+        .main-card {
+            display: none;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            width: 100%;
+            max-width: 950px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(99, 102, 241, 0.1);
+            overflow: hidden;
             animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        .back-btn {
-            background: rgba(255,255,255,0.05); border: 1px solid #475569; color: #fff;
-            padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-bottom: 25px; transition: 0.3s;
+        .nav-tabs {
+            display: flex;
+            background-color: rgba(10, 12, 16, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            padding: 5px;
         }
 
-        .input-group { margin-bottom: 22px; }
-        label { display: block; margin-bottom: 10px; color: #e2e8f0; font-weight: bold; }
-        input, textarea, select {
-            width: 100%; padding: 14px; background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; box-sizing: border-box;
-            font-family: 'Tajawal';
+        .nav-btn {
+            flex: 1;
+            padding: 18px 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-radius: 12px;
+            margin: 2px;
         }
 
-        .submit-btn {
-            width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary), var(--accent));
-            border: none; border-radius: 14px; color: white; font-size: 18px; font-weight: bold; cursor: pointer;
-            transition: 0.3s;
+        .nav-btn:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.05);
         }
-        .submit-btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
-        .hidden { display: none !important; }
+        .nav-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            box-shadow: 0 4px 15px var(--glow-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px 30px;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p { color: #94a3b8; line-height: 1.7; margin-bottom: 25px; }
+
+        /* الرئيسية */
+        .hero-section { text-align: center; padding: 30px 10px; }
+        .hero-title {
+            font-size: 48px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 30%, var(--primary-purple), var(--primary-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc { font-size: 17px; color: #cbd5e1; max-width: 600px; margin: 0 auto 35px auto; }
+        .buttons-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 800;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s ease;
+            min-width: 220px;
+        }
+
+        .btn-discord { background: linear-gradient(135deg, #5865f2, #404fed); box-shadow: 0 6px 20px rgba(88, 101, 242, 0.4); }
+        .btn-tiktok { background: #000; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: -3px 3px 0px #fe2c55, 3px -3px 0px #25f4ee; }
+
+        .social-btn:hover { transform: translateY(-4px); }
+
+        /* المؤسسين */
+        .founders-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
+        .founder-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 30px 20px;
+            border-radius: 18px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+        .founder-card:hover { transform: translateY(-10px); border-color: var(--primary-purple); box-shadow: 0 15px 35px var(--glow-color); }
+        .founder-img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; margin-bottom: 18px; border: 3px solid var(--primary-purple); }
+        .founder-card h3 { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+        .founder-card span { color: var(--primary-pink); font-size: 14px; font-weight: 700; }
+
+        /* شبكة التقديمات */
+        .apply-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 15px; }
+        .apply-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 25px 20px;
+            border-radius: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .apply-card:hover { border-color: var(--primary-pink); transform: translateY(-6px); }
+        .apply-card-icon { font-size: 40px; margin-bottom: 12px; }
+        .apply-card h3 { color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+        .apply-card p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+
+        .btn-card-apply {
+            background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* الاستمارة */
+        .apply-form-container {
+            display: none;
+            margin-top: 25px;
+            background: rgba(10, 12, 16, 0.9);
+            border: 1px solid var(--primary-purple);
+            border-radius: 16px;
+            padding: 30px;
+        }
+        .form-header-title { color: var(--primary-pink); font-size: 20px; font-weight: 800; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-back { background: #334155; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 14px; color: #e2e8f0; }
+        input[type="text"], input[type="number"], textarea {
+            width: 100%; padding: 14px; background-color: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #fff; outline: none;
+        }
+        textarea { resize: vertical; min-height: 90px; }
+        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink)); color: #fff; border: none; border-radius: 10px; font-size: 17px; font-weight: 800; cursor: pointer; }
+
+        .status-msg { margin-top: 15px; text-align: center; font-size: 14px; display: none; }
+        .status-msg.success { color: #4ade80; }
+        .status-msg.error { color: #f87171; }
+
+        .rules-list { list-style: none; }
+        .rules-list li { background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; margin-bottom: 12px; }
+        .rules-list strong { color: var(--primary-purple); display: block; margin-bottom: 6px; font-size: 16px; }
+        .rule-link-btn { display: inline-block; margin-top: 10px; color: var(--primary-pink); text-decoration: none; font-weight: bold; font-size: 14px; }
+        .rule-link-btn:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <h1>بوابة التقديم الإلكترونية</h1>
-    <p class="subtitle">اختر القطاع المناسب لبدء إجراءات الانضمام</p>
-
-    <div class="grid-container" id="mainGrid">
-        <div class="card" onclick="openForm('الجيش')">🎖️ <h3>الجيش</h3></div>
-        <div class="card" onclick="openForm('الشرطة')">👮 <h3>الشرطة</h3></div>
-        <div class="card" onclick="openForm('الصحة')">🚑 <h3>الصحة</h3></div>
-        <div class="card" onclick="openForm('العدل')">⚖️ <h3>العدل</h3></div>
-        <div class="card" onclick="openForm('مقفل التقديم')">🕵️ <h3>مقفل التقديم</h3></div>
-        <div class="card" onclick="openForm('فتح عصابة')">🥷🏻 <h3>فتح عصابة</h3></div>
-        <div class="card" onclick="openForm('الأجرام')">🔪 <h3>الأجرام</h3></div>
-        <div class="card" onclick="openForm('مقفل التقديم')">🛠️ <h3>الإدارة</h3></div>
-        <div class="card" onclick="openForm('مقفل التقديم')">👁️ <h3>مقفل التقديم</h3></div>
+<!-- 1️⃣ شاشة الترحيب وتحديد المصدر -->
+<div id="stepWelcome" class="gateway-overlay">
+    <h1 class="gateway-title">ELITE ZONE RP</h1>
+    <p class="gateway-desc">أهلاً بك! يرجى تحديد جهة وصولك لمتابعة عملية الدخول بالسيرفر:</p>
+    <div class="gateway-buttons">
+        <button class="btn-gate btn-gate-discord" onclick="showStep('stepDiscordCode')">
+            🟣 جاي من الديسكورد
+        </button>
+        <button class="btn-gate btn-gate-social" onclick="showStep('stepSocialMedia')">
+            🌐 جاي من مواقع التواصل الاجتماعي
+        </button>
     </div>
+</div>
 
-    <div id="formSection">
-        <button class="back-btn" onclick="closeForm()">← العودة للقطاعات</button>
-        <h2 id="deptTitle" style="color: var(--accent); margin-top: 0;"></h2>
+<!-- 2️⃣ شاشة زوار مواقع التواصل الاجتماعي -->
+<div id="stepSocialMedia" class="gateway-overlay" style="display: none;">
+    <h1 class="gateway-title">انضم إلى الديسكورد 💬</h1>
+    <p class="gateway-desc">للدخول لصفحة التقديمات والفعاليات، يجب عليك الانضمام إلى سيرفر الديسكورد الرسمي وأخذ كود التحقق من هناك!</p>
+    
+    <a href="https://discord.gg/VVnbqSCjMg" target="_blank" class="btn-gate btn-gate-discord" style="text-decoration: none;">
+        🚀 اضغط هنا للدخول للديسكورد
+    </a>
+    
+    <button class="btn-back-gate" onclick="showStep('stepWelcome')">↩️ العودة للقائمة السابقة</button>
+</div>
+
+<!-- 3️⃣ شاشة إدخال كود التحقق للديسكورد -->
+<div id="stepDiscordCode" class="gateway-overlay" style="display: none;">
+    <h1 class="gateway-title">التحقق من العضوية 🔑</h1>
+    <p class="gateway-desc">أدخل كود التحقق المخصص لك للوصول للقائمة الرئيسية والتقديمات:</p>
+    
+    <input type="text" id="verifyCodeInput" class="code-input" placeholder="أدخل الكود هنا..." maxlength="15">
+    <button class="btn-gate btn-gate-discord" onclick="verifyAccessCode()">تأكيد الكود والدخول 🔓</button>
+    <div id="codeError" class="error-msg">❌ الكود غير صحيح! تأكد من الكود وحاول مجدداً.</div>
+
+    <button class="btn-back-gate" onclick="showStep('stepWelcome')">↩️ العودة للقائمة السابقة</button>
+</div>
+
+<!-- 4️⃣ الواجهة الرئيسية الكاملة للسيرفر -->
+<div id="mainWebsiteCard" class="main-card">
+    <nav class="nav-tabs">
+        <button class="nav-btn active" onclick="switchTab('elite')">🔥 إيليت زون</button>
+        <button class="nav-btn" onclick="switchTab('founders')">👑 المؤسسين</button>
+        <button class="nav-btn" onclick="switchTab('activation')">✅ التفعيل</button>
+        <button class="nav-btn" onclick="switchTab('rules')">📜 القوانين</button>
+        <button class="nav-btn" onclick="switchTab('apply')">📝 التقديمات</button>
+    </nav>
+
+    <!-- قائمة إيليت زون -->
+    <section id="elite" class="tab-content active">
+        <div class="hero-section">
+            <h1 class="hero-title">ELITE ZONE RP</h1>
+            <p class="hero-desc">مرحباً بك في البوابة الرسمية لسيرفر إيليت زون رول بلاي. المكان الأفضل لتجربة واقعية وممتعة!</p>
+            <div class="buttons-group">
+                <a href="https://discord.gg/VVnbqSCjMg" target="_blank" class="social-btn btn-discord">💬 سيرفرنا ديسكورد</a>
+                <a href="https://www.tiktok.com/@wr_3tb" target="_blank" class="social-btn btn-tiktok">🎵 حسابنا تيك توك</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- قائمة المؤسسين -->
+    <section id="founders" class="tab-content">
+        <h2>👑 مؤسسي السيرفر</h2>
+        <p>القائمين على تطوير وإدارة مجتمع إيليت زون:</p>
+        <div class="founders-grid">
+            <div class="founder-card">
+                <img src="https://cdn.discordapp.com/avatars/1486962784305418322/a816b66502cbc8f19e80f9de95cca68c.webp?size=4096" alt="سعود" class="founder-img">
+                <h3>سعود</h3>
+                <span>Server Owner / أونر السيرفر</span>
+            </div>
+            <div class="founder-card">
+                <img src="https://cdn.discordapp.com/avatars/1349133331484377091/8957674f238cd42a06320375c3a35e26.webp?size=4096" alt="عتب" class="founder-img">
+                <h3>عتب</h3>
+                <span>Head Admin / مسؤول الإدارة</span>
+            </div>
+            <div class="founder-card">
+                <img src="https://cdn.discordapp.com/avatars/1382856373829632020/ee73ea77642e95667ff095a9da642223.webp?size=4096" alt="عراب" class="founder-img">
+                <h3>عراب</h3>
+                <span>Deputy Head Admin / نائب مسؤول الإدارة</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- قائمة التفعيل -->
+    <section id="activation" class="tab-content">
+        <h2>✅ طريقة التفعيل بالسيرفر</h2>
+        <p>خطوات التفعيل والدخول لمدينة إيليت زون:</p>
+        <ol style="margin-right: 20px; color: #94a3b8; line-height: 2;">
+            <li>انضم إلى سيرفر الديسكورد الرسمي عبر الصفحة الرئيسية.</li>
+            <li>توجه إلى روم <code>#التفعيل</code> داخل الديسكورد.</li>
+            <li>إقرأ القوانين بتمعن ثم اضغط على زر التفعيل.</li>
+        </ol>
+    </section>
+
+    <!-- قائمة القوانين -->
+    <section id="rules" class="tab-content">
+        <h2>📜 القوانين العامة للسيرفر</h2>
+        <ul class="rules-list">
+            <li>
+                <strong>📌 قوانين السيرفر العامة</strong>
+                تأكد من قراءة واكتساب دراية شاملة بنظام السيرفر وضوابطه العامة.
+                <br>
+                <a href="https://discordapp.com/channels/1519656749001347122/1529943521468092577" target="_blank" class="rule-link-btn">🔗 التوجه إلى روم قوانين السيرفر بالديسكورد</a>
+            </li>
+            <li>
+                <strong>🎭 قوانين الرول بلاي (Roleplay Rules)</strong>
+                الالتزام بتمثيل تقمص الشخصية بالشكل الصحيح وعدم تخطي القواعد.
+                <br>
+                <a href="https://discordapp.com/channels/1519656749001347122/1529943522558349393" target="_blank" class="rule-link-btn">🔗 التوجه إلى روم قوانين الرول بلاي بالديسكورد</a>
+            </li>
+            <li>
+                <strong>🏥 قوانين وزارة الصحة والمسعفين</strong>
+                ضوابط وآليات التعامل الطبي وتفاعل المسعفين مع القضايا والسيناريوهات.
+                <br>
+                <a href="https://discordapp.com/channels/1519656749001347122/1529943523326165055" target="_blank" class="rule-link-btn">🔗 التوجه إلى روم قوانين الصحة بالديسكورد</a>
+            </li>
+        </ul>
+    </section>
+
+    <!-- قائمة التقديمات -->
+    <section id="apply" class="tab-content">
+        <h2>📝 انضم إلى قطاعات إيليت زون</h2>
+        <p>اختر القطاع الذي ترغب بالانضمام إليه واضغط على الزر لبدء الإجابة على الأسئلة التخصصية:</p>
         
-        <form id="applyForm">
-            <input type="hidden" id="selectedDept">
-            
-            <div class="input-group">
-                <label>يوزرك في الديسكورد</label>
-                <input type="text" id="discord_user" placeholder="مثال: user_name" required>
+        <div id="applyCardsGrid" class="apply-grid">
+            <div class="apply-card">
+                <div><div class="apply-card-icon">🏛️</div><h3>مجلس الوزراء</h3><p>صياغة القرارات السياسية، إدارة الدولة والتنسيق بين جميع الوزارات.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('مجلس الوزراء 🏛️')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">⚖️</div><h3>وزارة العدل</h3><p>إقامة العدل، محاكمة القضايا، وإصدار الأحكام والمذكرات القضائية.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('وزارة العدل ⚖️')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">🛡️</div><h3>طاقم الإدارة</h3><p>الانضمام لفريق الإدارة للمساعدة في تنظيم وتطوير السيرفر.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('الإدارة 🛡️')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">👁️</div><h3>طاقم الرقابة</h3><p>مراقبة جودة الرول بلاي ومتابعة المخالفات داخل المدينة.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('الرقابة 👁️')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">👮</div><h3>الشرطة العسكرية</h3><p>حماية المدينة وفرض النظام والمحافظة على الأمن العام.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('الشرطة العسكرية 👮')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">🚒</div><h3>المطافي</h3><p>التعامل مع حوادث الحريق والحرائق الطارئة وإنقاذ المواطنين.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('المطافي 🚒')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">🏥</div><h3>وزارة الصحة</h3><p>تقديم الرعاية الطبية والإسعافات الأولية للمصابين.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('وزارة الصحة 🏥')">تقديم الآن 🚀</button>
+            </div>
+            <div class="apply-card">
+                <div><div class="apply-card-icon">💥</div><h3>عصابة المدفعجية</h3><p>السيطرة على النفوذ والعمليات الإجرامية المنظمة.</p></div>
+                <button class="btn-card-apply" onclick="openApplyForm('عصابة المدفعجية 💥')">تقديم الآن 🚀</button>
+            </div>
+        </div>
+
+        <!-- استمارة الأسئلة المتغيرة ديناميكياً -->
+        <div id="applyFormContainer" class="apply-form-container">
+            <div class="form-header-title">
+                <span id="targetSectorTitle">التقديم على: --</span>
+                <button class="btn-back" onclick="closeApplyForm()">↩️ العودة للقطاعات</button>
             </div>
 
-            <div class="input-group">
-                <label id="nameLabel">اسمك رول</label>
-                <input type="text" id="fullName" placeholder="" required>
-            </div>
+            <form id="rpForm">
+                <input type="hidden" id="selectedSector" value="">
+                
+                <!-- البيانات الأساسية ثابتة لجميع القطاعات -->
+                <div class="form-group">
+                    <label for="discordTag">اسم حسابك في الديسكورد (Username)</label>
+                    <input type="text" id="discordTag" placeholder="user_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="realAge">عمرك الحقيقي</label>
+                    <input type="number" id="realAge" placeholder="18" min="12" max="99" required>
+                </div>
+                <div class="form-group">
+                    <label for="charName">اسم الشخصية داخل اللعبة</label>
+                    <input type="text" id="charName" placeholder="مثال: خالد العتيبي" required>
+                </div>
 
-            <div class="input-group" id="ageGroup">
-                <label>عمرك رول</label>
-                <input type="number" id="ageRole" placeholder="مثال: 25">
-            </div>
+                <!-- مكان الأسئلة التخصصية الواقعية لكل جهة -->
+                <div id="dynamicQuestionsContainer"></div>
 
-            <div class="input-group hidden" id="membersCountGroup">
-                <label>كم عدد أعضاءك الذين معك؟</label>
-                <input type="number" id="membersCount" placeholder="مثال: 5">
-            </div>
+                <button type="submit" class="btn-submit">إرسال استمارة التقديم 🚀</button>
+                <div id="statusMsg" class="status-msg"></div>
+            </form>
+        </div>
+    </section>
+</div>
 
-            <div class="input-group">
-                <label id="experienceLabel">خبراتك</label>
-                <textarea id="experience" rows="4" required></textarea>
-            </div>
+<script>
+    // 🔑 كود التحقق لدخول السيرفر
+    const CORRECT_CODE = "ELITE123";
 
-            <div class="input-group hidden" id="roomAddGroup">
-                <label>هل أنت حاب تضيف روم تقديم لعصابتك؟</label>
-                <select id="addRoom">
-                    <option value="نعم">نعم</option>
-                    <option value="لا">لا</option>
-                </select>
-            </div>
+    function showStep(stepId) {
+        document.getElementById('stepWelcome').style.display = 'none';
+        document.getElementById('stepSocialMedia').style.display = 'none';
+        document.getElementById('stepDiscordCode').style.display = 'none';
+        document.getElementById('codeError').style.display = 'none';
 
-            <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب الآن</button>
-        </form>
-    </div>
+        document.getElementById(stepId).style.display = 'block';
+    }
 
-    <script>
-        const WEBHOOK_URL = "https://discord.com/api/webhooks/1465701117727084595/-PGzo4uuVu_p1yZhPRSY-kSNJp8d3EUjaKu23EmvF6zdfi_OrhH4STYj9tFMZDzft_sT";
+    function verifyAccessCode() {
+        const enteredCode = document.getElementById('verifyCodeInput').value.trim();
+        const errorMsg = document.getElementById('codeError');
 
-        // وظيفة لإغلاق البطاقات التي تحتوي على كلمة "مقفل"
-        function lockStatus() {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                if (card.innerText.includes("مقفل")) {
-                    card.classList.add('locked');
-                }
-            });
+        if (enteredCode.toUpperCase() === CORRECT_CODE.toUpperCase()) {
+            document.getElementById('stepDiscordCode').style.display = 'none';
+            document.getElementById('mainWebsiteCard').style.display = 'block';
+        } else {
+            errorMsg.style.display = 'block';
         }
-        lockStatus();
+    }
 
-        function openForm(dept) {
-            if (dept.includes("مقفل")) {
-                alert("نعتذر، التقديم على هذا القطاع مقفل حالياً.");
-                return;
-            }
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
 
-            document.getElementById('mainGrid').classList.add('hidden');
-            document.getElementById('formSection').style.display = 'block';
-            document.getElementById('deptTitle').innerText = "التقديم على: " + dept;
-            document.getElementById('selectedDept').value = dept;
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
 
-            // إعادة ضبط الحقول الافتراضية
-            document.getElementById('membersCountGroup').classList.add('hidden');
-            document.getElementById('roomAddGroup').classList.add('hidden');
-            document.getElementById('ageGroup').classList.remove('hidden');
-            
-            // تخصيص الأسئلة بناءً على القسم
-            if (dept === 'فتح عصابة') {
-                document.getElementById('nameLabel').innerText = "اسمك رول:";
-                document.getElementById('experienceLabel').innerText = "خبراتك الإجرامية (اكثر من سطرين):";
-                document.getElementById('experience').placeholder = "اذكر تفاصيل خبراتك هنا...";
-                document.getElementById('membersCountGroup').classList.remove('hidden');
-                document.getElementById('roomAddGroup').classList.remove('hidden');
-            } else if (dept === 'الإدارة') {
-                document.getElementById('nameLabel').innerText = "الاسم الثلاثي:";
-                document.getElementById('experienceLabel').innerText = "لماذا تريد الانضمام للإدارة؟";
-            } else {
-                document.getElementById('nameLabel').innerText = "اسمك رول (داخل اللعبة):";
-                document.getElementById('experienceLabel').innerText = `خبراتك في قطاع ${dept}:`;
-            }
-            
-            window.scrollTo(0, 0);
-        }
+    // 📋 الأسئلة الواقعية والتخصصية لكل قطاع
+    const sectorQuestions = {
+        'مجلس الوزراء 🏛️': [
+            { id: 'q1', label: 'ما هي رؤيتك لتطوير النظام والتنسيق بين القطاعات الحكوية داخل المدينة؟' },
+            { id: 'q2', label: 'سيناريو: حدث نزاع حاد بين وزارة العدل والشرطة العسكرية حول صلاحيات التوقيف، كيف تتصرف كعضو بمجلس الوزراء؟' },
+            { id: 'q3', label: 'اذكر 3 قرارات استراتيجية ترغب بطرحها لتحسين جودة الحياة والاقتصاد بل مدينة.' }
+        ],
+        'وزارة العدل ⚖️': [
+            { id: 'q1', label: 'ماهي الشروط والخطوات الأساسية لإصدار قرار تفتيش أو إلقاء قبض رسمية؟' },
+            { id: 'q2', label: 'سيناريو: قدم محامي أدلة تثبت باطله ماهي إجراءات القبض على موكله من قبل الشرطة، ما هو حكمك القضائي؟' },
+            { id: 'q3', label: 'كيف تتعامل مع الضغوطات والتهديدات أثناء محاكمة قضية كبرى تمس عصابات أو شخصيات رفيعة؟' }
+        ],
+        'الإدارة 🛡️': [
+            { id: 'q1', label: 'كيف تتعامل مع بلاغ فيه مشادة كلامية وتخطي قوانين بين لاعبين داخل روم الصوت؟' },
+            { id: 'q2', label: 'ما الفرق بين مخالفة Fail RP و Powergaming؟ مع إعطاء مثال لكل منهما.' },
+            { id: 'q3', label: 'ما هي ساعات تواجدك اليومية وقدرتك على تغطية التكتات المفتوحة؟' }
+        ],
+        'الرقابة 👁️': [
+            { id: 'q1', label: 'ما هي الطرق التي تتبعها لمراقبة السيناريوهات بدون التأثير على مجريات الرول بلاي؟' },
+            { id: 'q2', label: 'سيناريو: رأيت لاعباً يخالف قوانين القتل VDM/RDM في مكان عام، ما هي خطواتك بالترتيب؟' },
+            { id: 'q3', label: 'كيف تقيم جودة الرول بلاي للجهات الأمنية والإجرامية بالسيرفر؟' }
+        ],
+        'الشرطة العسكرية 👮': [
+            { id: 'q1', label: 'ما هي مستويات استخدام القوة (Use of Force) ومتى يحق لك إطلاق النار المباشر؟' },
+            { id: 'q2', label: 'سيناريو: مطاردة عالية الخطورة ودخل المشتبه به منطقة آمنة، كيف تتصرف بحسب الأنظمة؟' },
+            { id: 'q3', label: 'ما هي آلية التعامل مع موقع جريمة واحتجاز الرهائن؟' }
+        ],
+        'المطافي 🚒': [
+            { id: 'q1', label: 'ماهي خطتك للتعامل مع بلاغ حريق ضخم في منطقة مأهولة بالسكان؟' },
+            { id: 'q2', label: 'كيف تنسق مع وزارة الصحة والشرطة عند وصولك لموقع حادث سير فيه إصابات وحريق؟' },
+            { id: 'q3', label: 'ماهي معدات السلامة والإنقاذ الأساسية التي تجب مراجعتها قبل انطلاق الآلية؟' }
+        ],
+        'وزارة الصحة 🏥': [
+            { id: 'q1', label: 'كيف تنظم أولوية العلاج (Triage) عند وصول عدة إصابات طارئة بنفس الوقت؟' },
+            { id: 'q2', label: 'سيناريو: تم إحضار مصاب بطلق ناري ويرفض التعاون أو التجاوب مع المسعف، كيف تتعامل معه رول بلاي؟' },
+            { id: 'q3', label: 'ما هو بروتوكول نقل الحالات الحرجة إلى المستشفى الرئيسي؟' }
+        ],
+        'عصابة المدفعجية 💥': [
+            { id: 'q1', label: 'كيف تخطط لعملية إجرامية أو سطو مسلح مع الالتزام بقوانين الرول بلاي وعدم التخطي؟' },
+            { id: 'q2', label: 'سيناريو: حاصرتكم الشرطة داخل موقع بدون منفذ خروج، كيف تدرون عملية التفاوض؟' },
+            { id: 'q3', label: 'ما الذي يميّز عصابة المدفعجية عن باقي العصابات في طريقة لعب وتجسيد الرول بلاي؟' }
+        ]
+    };
 
-        function closeForm() {
-            document.getElementById('mainGrid').classList.remove('hidden');
-            document.getElementById('formSection').style.display = 'none';
-            document.getElementById('applyForm').reset();
-        }
+    function openApplyForm(sectorName) {
+        document.getElementById('applyCardsGrid').style.display = 'none';
+        document.getElementById('applyFormContainer').style.display = 'block';
+        document.getElementById('targetSectorTitle').innerText = "التقديم على: " + sectorName;
+        document.getElementById('selectedSector').value = sectorName;
 
-        document.getElementById('applyForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const dept = document.getElementById('selectedDept').value;
-            btn.innerText = "جاري الإرسال...";
-            btn.disabled = true;
+        const questionsContainer = document.getElementById('dynamicQuestionsContainer');
+        questionsContainer.innerHTML = '';
 
-            // تجهيز البيانات للديسكورد
-            let fields = [
-                { name: "🚩 القطاع:", value: `**${dept}**`, inline: false },
-                { name: "🆔 ديسكورد:", value: document.getElementById('discord_user').value, inline: true },
-                { name: "👤 اسم الرول:", value: document.getElementById('fullName').value, inline: true },
-                { name: "🎂 عمر الرول:", value: document.getElementById('ageRole').value || "غير محدد", inline: true }
-            ];
+        const questions = sectorQuestions[sectorName] || [
+            { id: 'q1', label: 'خبرتك السابقة في هذا المجال / بالرول بلاي' },
+            { id: 'q2', label: 'لماذا تريد الانضمام وماهي تطلعاتك؟' }
+        ];
 
-            if (dept === 'فتح عصابة') {
-                fields.push({ name: "👥 عدد الأعضاء:", value: document.getElementById('membersCount').value, inline: true });
-                fields.push({ name: "🏠 إضافة روم تقديم؟:", value: document.getElementById('addRoom').value, inline: true });
-            }
-
-            fields.push({ name: "📑 تفاصيل الخبرة:", value: document.getElementById('experience').value });
-
-            const payload = {
-                username: "بوابة التقديم",
-                embeds: [{
-                    title: "📨 طلب تقديم جديد",
-                    color: dept === 'فتح عصابة' ? 15158332 : 3447003,
-                    fields: fields,
-                    footer: { text: "توقيت الطلب: " + new Date().toLocaleString('ar-SA') }
-                }]
-            };
-
-            try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if(response.ok) {
-                    alert("✅ تم إرسال طلبك بنجاح!");
-                    closeForm();
-                } else { throw new Error(); }
-            } catch (error) {
-                alert("❌ حدث خطأ في الإرسال، تأكد من اتصالك.");
-            } finally {
-                btn.innerText = "إرسال الطلب الآن";
-                btn.disabled = false;
-            }
+        questions.forEach((q, index) => {
+            const formGroup = document.createElement('div');
+            formGroup.className = 'form-group';
+            formGroup.innerHTML = `
+                <label for="${q.id}">السؤال ${index + 1}: ${q.label}</label>
+                <textarea id="${q.id}" class="dynamic-q" data-question="${q.label}" placeholder="إجابتك بالتفصيل..." required></textarea>
+            `;
+            questionsContainer.appendChild(formGroup);
         });
-    </script>
+    }
+
+    function closeApplyForm() {
+        document.getElementById('applyFormContainer').style.display = 'none';
+        document.getElementById('applyCardsGrid').style.display = 'grid';
+        document.getElementById('statusMsg').style.display = 'none';
+    }
+
+    // 🔗 رابط الويب هوك الخاص بروم التقديمات
+    const WEBHOOK_URL = "https://discordapp.com/api/webhooks/1529943066809471078/o0lmuIV4cfIKbHOhLuV1DvE5ys6Z_hEsqECtnYxTI9bFZxY2ZGncRBNxxE9XmgBau7UT";
+
+    document.getElementById('rpForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const statusMsg = document.getElementById('statusMsg');
+        statusMsg.style.display = 'block';
+        statusMsg.className = 'status-msg';
+        statusMsg.innerText = "جاري إرسال الطلب...";
+
+        const sector = document.getElementById('selectedSector').value;
+        const discordTag = document.getElementById('discordTag').value;
+        const realAge = document.getElementById('realAge').value;
+        const charName = document.getElementById('charName').value;
+
+        // تجميع إجابات الأسئلة المتغيرة
+        const dynamicFields = [];
+        const dynamicInputs = document.querySelectorAll('.dynamic-q');
+        dynamicInputs.forEach((input, index) => {
+            dynamicFields.push({
+                name: `❓ ${input.getAttribute('data-question')}`,
+                value: input.value || "لم يتم الرد",
+                inline: false
+            });
+        });
+
+        const fieldsPayload = [
+            { name: "🎯 القطاع / الجهة", value: sector, inline: false },
+            { name: "👤 حساب الديسكورد", value: discordTag, inline: true },
+            { name: "🎂 العمر الحقيقي", value: realAge, inline: true },
+            { name: "🪪 اسم الشخصية", value: charName, inline: true },
+            ...dynamicFields
+        ];
+
+        const embedPayload = {
+            embeds: [{
+                title: `📋 تقديم جديد: ${sector}`,
+                color: 15509731,
+                fields: fieldsPayload,
+                footer: { text: "نظام التقديم الآلي - Elite Zone" },
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(embedPayload)
+            });
+
+            if (response.ok) {
+                statusMsg.className = 'status-msg success';
+                statusMsg.innerText = "✅ تم إرسال تقديمك بنجاح! سيتم مراجعته والتواصل معك عبر الديسكورد.";
+                document.getElementById('rpForm').reset();
+            } else {
+                throw new Error();
+            }
+        } catch (error) {
+            statusMsg.className = 'status-msg error';
+            statusMsg.innerText = "❌ حدث خطأ أثناء الإرسال. تأكد من رابط الـ Webhook الخاص بك.";
+        }
+    });
+</script>
+
 </body>
 </html>
